@@ -27,9 +27,11 @@ public class Launcher {
 
             System.out.println("OUTPUT SCHEMA : " + cepEngine.getSchema(outputStreamName));
 
-            while (true) {
-                cepEngine.input(inputStreamName, cepEngine.getStringPayload());
-            }
+            cepEngine.input(inputStreamName, cepEngine.getStringPayload());
+
+            //while (true) {
+            //    cepEngine.input(inputStreamName, cepEngine.getStringPayload());
+            //}
 
             //cepEngine.shutdown();
 

@@ -13,7 +13,7 @@
         <jdk>1.8</jdk>
         <maven.compiler.version>3.5.1</maven.compiler.version>
         <maven.bundle.compiler.version>4.0.0</maven.bundle.compiler.version>
-        <siddhi.version>4.2.17</siddhi.version>
+        <siddhi.version>5.1.11</siddhi.version>
     </properties>
 
 
@@ -29,37 +29,47 @@
         -->
 
         <dependency>
-            <groupId>org.wso2.siddhi</groupId>
+            <groupId>io.siddhi</groupId>
             <artifactId>siddhi-core</artifactId>
             <version>${siddhi.version}</version>
         </dependency>
 
 
         <dependency>
-            <groupId>org.wso2.siddhi</groupId>
+            <groupId>io.siddhi</groupId>
             <artifactId>siddhi-query-api</artifactId>
             <version>${siddhi.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.wso2.siddhi</groupId>
+            <groupId>io.siddhi</groupId>
             <artifactId>siddhi-query-compiler</artifactId>
             <version>${siddhi.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.wso2.siddhi</groupId>
+            <groupId>io.siddhi</groupId>
             <artifactId>siddhi-annotations</artifactId>
             <version>${siddhi.version}</version>
         </dependency>
 
 
-        <!-- https://mvnrepository.com/artifact/org.wso2.extension.siddhi.map.avro/siddhi-map-avro -->
+        <!-- https://mvnrepository.com/artifact/io.siddhi.extension.map.json/siddhi-map-json -->
         <dependency>
-            <groupId>org.wso2.extension.siddhi.map.avro</groupId>
-            <artifactId>siddhi-map-avro</artifactId>
-            <version>1.0.7</version>
+            <groupId>io.siddhi.extension.map.json</groupId>
+            <artifactId>siddhi-map-json</artifactId>
+            <version>5.0.6</version>
         </dependency>
+
+
+
+        <!-- https://mvnrepository.com/artifact/io.siddhi.extension.map.avro/siddhi-map-avro -->
+        <dependency>
+            <groupId>io.siddhi.extension.map.avro</groupId>
+            <artifactId>siddhi-map-avro</artifactId>
+            <version>2.0.6</version>
+        </dependency>
+
 
 
 

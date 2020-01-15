@@ -1,9 +1,9 @@
+import io.siddhi.core.util.transport.InMemoryBroker;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.io.*;
 import org.apache.avro.reflect.ReflectDatumWriter;
-import org.wso2.siddhi.core.util.transport.InMemoryBroker;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -26,6 +26,9 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
     public void onMessage(Object msg) {
 
         try {
+            System.out.println(msg);
+
+            /*
             ByteBuffer bb = (ByteBuffer) msg;
             Decoder decoder = new DecoderFactory().binaryDecoder(bb.array(), null);
             GenericData.Record rec = reader.read(null, decoder);
@@ -39,6 +42,7 @@ public class OutputSubscriber implements InMemoryBroker.Subscriber {
             String input = new String(outputStream.toByteArray());
             //System.out.println("Original Object Schema JSON: " + schema);
             System.out.println("Original Object DATA JSON: "+ input);
+            */
 
         } catch(Exception ex) {
             ex.printStackTrace();

@@ -1,3 +1,11 @@
+
+import com.google.gson.Gson;
+import io.siddhi.core.SiddhiAppRuntime;
+import io.siddhi.core.SiddhiManager;
+import io.siddhi.core.stream.output.sink.Sink;
+import io.siddhi.core.util.transport.InMemoryBroker;
+import io.siddhi.extension.map.avro.util.schema.RecordSchema;
+import io.siddhi.query.api.definition.Attribute;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumReader;
@@ -5,12 +13,6 @@ import org.apache.avro.io.*;
 import org.apache.avro.reflect.ReflectData;
 import org.apache.avro.reflect.ReflectDatumWriter;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.wso2.extension.siddhi.map.avro.util.schema.RecordSchema;
-import org.wso2.siddhi.core.SiddhiAppRuntime;
-import org.wso2.siddhi.core.SiddhiManager;
-import org.wso2.siddhi.core.stream.output.sink.Sink;
-import org.wso2.siddhi.core.util.transport.InMemoryBroker;
-import org.wso2.siddhi.query.api.definition.Attribute;
 
 import java.io.ByteArrayOutputStream;
 import java.util.*;
@@ -25,6 +27,8 @@ public class CEPEngine {
     private Map<String,String> topicMap;
 
 
+    private Gson gson;
+
     public CEPEngine() {
 
         schemaMap = new ConcurrentHashMap<>();
@@ -33,7 +37,7 @@ public class CEPEngine {
         parser = new Schema.Parser();
         // Creating Siddhi Manager
         siddhiManager = new SiddhiManager();
-
+        gson = new Gson();
     }
 
     public void shutdown() {
@@ -91,7 +95,8 @@ public class CEPEngine {
         try {
 
             if((schemaMap.containsKey(streamName)) && (topicMap.containsKey(streamName))) {
-                InMemoryBroker.publish(topicMap.get(streamName), getByteGenericDataRecordFromString(schemaMap.get(streamName),jsonPayload));
+                //InMemoryBroker.publish(topicMap.get(streamName), getByteGenericDataRecordFromString(schemaMap.get(streamName),jsonPayload));
+                InMemoryBroker.publish(topicMap.get(streamName), jsonPayload);
 
             } else {
                 System.out.println("input error : no schema");
@@ -190,6 +195,7 @@ public class CEPEngine {
 
             Ticker tick = new Ticker(source, urn, metric, ts, value);
 
+            /*
             Schema schema = ReflectData.get().getSchema(Ticker.class);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             Encoder encoder = new EncoderFactory().jsonEncoder(schema, outputStream);
@@ -198,6 +204,9 @@ public class CEPEngine {
             encoder.flush();
 
             rec = new String(outputStream.toByteArray());
+             */
+
+            rec = gson.toJson(tick);
 
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -367,8 +376,22 @@ public class CEPEngine {
                 sb.append(field.name() + " " + field.schema().getType().getName() + ", ");
             }
 
-            sourceString  = "@source(type='inMemory', topic='" + topic + "', @map(type='avro', schema .def = \"\"\"" + schema  + "\"\"\")) " +
+            //sourceString  = "@source(type='inMemory', topic='" + topic + "', @map(type='avro', schema .def = \"\"\"" + schema  + "\"\"\")) " +
+            //        "define stream " + streamName + " (" + sb.substring(0,sb.length() -2) + "); ";
+
+            sourceString  = "@source(type='inMemory', topic='" + topic + "', @map(type='json')) " +
                     "define stream " + streamName + " (" + sb.substring(0,sb.length() -2) + "); ";
+            System.out.println(sourceString);
+
+            /*
+            @source(type='inMemory', topic='17963000-bcdb-4fad-a114-c5da7255e809', @map(type='avro', schema .def = """{"type":"record","name":"Ticker","fields":[{"name":"source","type":"string"},{"name":"urn","type":"string"},{"name":"metric","type":"string"},{"name":"ts","type":"long"},{"name":"value","type":"double"}]}"""))
+            define stream UserStream (source string, urn string, metric string, ts long, value double);
+             */
+
+            /*
+            @source(type = 'http', receiver.url = "http://0.0.0.0:8006/cargo", @map(type = 'json'))
+            define stream CargoStream (weight int);
+             */
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -381,7 +404,7 @@ public class CEPEngine {
         String sinkString = null;
         try {
 
-            sinkString = "@sink(type='inMemory', topic='" + topic + "', @map(type='avro')) " +
+            sinkString = "@sink(type='inMemory', topic='" + topic + "', @map(type='json')) " +
                     "define stream " + streamName + " (" + outputSchemaString + "); ";
 
         } catch (Exception ex) {
